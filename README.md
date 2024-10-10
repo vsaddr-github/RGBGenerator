@@ -76,4 +76,3 @@ This project is licensed under the open source license - see the LICENSE file fo
 
 ---
 
-This README file provides the essential information to get started with the RGB Generator, including setup, running the application, and usage guidelines. Let me know if there are any additional details you would like to include!
