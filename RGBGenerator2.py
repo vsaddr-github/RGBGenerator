@@ -1,5 +1,5 @@
 # RGB Generator - Open Source Software
-# 
+# D:\USAF\color-research\remote01\RGBGeneratorWVignett1.py
 # This software is distributed under an open source license. You are permitted to use, modify, and distribute it, provided that
 # proper credit is given to the original author. If you use this software, please include a reference to the creator of Vlads Test Target.
 #
@@ -15,9 +15,12 @@
 
 import pygame
 import tkinter as tk
-from tkinter import ttk
+#from tkinter import ttk
 import datetime
 import os
+import math
+
+import numpy as np
 
 # Function to update the color on the projector screen
 def update_color():
@@ -35,11 +38,44 @@ def update_color():
     
     # Update the color and alpha value for the projector screen
     color = (r, g, b, a)
-    surface = pygame.Surface(color_screen.get_size(), pygame.SRCALPHA)
-    surface.fill((*color,))
+    (current_width, current_height)=color_screen.get_size()
+    normalized_distances = precompute_distances(current_width, current_height)
+    vignette_factor = vignette_slider.get() / 50  # Slider value from -50 to 50
+    
+    if vignette_factor > 0:
+        brightness_modifier= 1 - vignette_factor * normalized_distances ** 2
+    else:
+        brightness_modifier= 1 + vignette_factor * (1 - normalized_distances ** 2)
+        
+    r_array = np.clip(r * brightness_modifier, 0, 255).astype(np.uint8)
+    g_array = np.clip(g * brightness_modifier, 0, 255).astype(np.uint8)
+    b_array = np.clip(b * brightness_modifier, 0, 255).astype(np.uint8)
+    rgb_array = np.dstack((r_array, g_array, b_array))
+    surface = pygame.surfarray.make_surface(rgb_array)
+    # we need to add reading alpha from slider
+    surface.set_alpha(int(a ))
+
     color_screen.fill((0, 0, 0))  # Clear screen
     color_screen.blit(surface, (0, 0))
     pygame.display.flip()
+
+mem_width=-1
+mem_height=-1
+ndistances=None
+def precompute_distances(width,height):
+    global ndistances,mem_width,mem_height
+    if width == mem_width and height == mem_height:
+        return ndistances
+    #print (f"Degug Precompute_distances {height} x{width} (height x width) ")
+    mem_width=width
+    mem_height=height
+    center_x = width / 2
+    center_y = height / 2
+    y_coords, x_coords = np.meshgrid(np.arange(height), np.arange(width))
+    distances = np.sqrt((x_coords - center_x) ** 2 + (y_coords - center_y) ** 2)
+    max_distance = np.sqrt(center_x ** 2 + center_y ** 2)
+    ndistances=distances / max_distance
+    return ndistances
 
 # Function to update sliders based on entry box changes
 def update_slider_from_entry(entry, slider):
@@ -77,10 +113,11 @@ def save_log():
     g = green_slider.get()
     b = blue_slider.get()
     a = alpha_slider.get()
+    v = vignette_slider.get()
     user_text = user_input.get()
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
-    log_entry = f"{timestamp} - RGB: ({r}, {g}, {b}, Alpha: {a}) - Note: {user_text}\n"
+    log_entry = f"{timestamp} - RGB: ({r}, {g}, {b}, Alpha: {a}, Vignette: {v}) - Note: {user_text}\n"
     with open(log_file_path, "a") as log_file:
         log_file.write(log_entry)
 
@@ -111,7 +148,7 @@ root.title("Color Control")
 root.geometry("600x800")  # Increase panel size
 
 # Add title with byline
-title_label = tk.Label(root, text="RGB Generator from creator of Vlads Test Target", font=("Helvetica", 16, "bold"))
+title_label = tk.Label(root, text="RGB Generator from Vlads Test Target", font=("Helvetica", 16, "bold"))
 title_label.pack(pady=10)
 
 # Get the full path to the log file
@@ -119,7 +156,7 @@ log_file_path = os.path.abspath("color_log.txt")
 
 # Set up dropdown for display sizes
 display_size_var = tk.StringVar(root)
-display_size_var.set("1920x1080")  # Default value
+display_size_var.set("1280x720")  # Default value
 display_sizes = [
     "640x480",  # VGA
     "800x600",  # SVGA
@@ -131,14 +168,15 @@ display_sizes = [
     "2560x1440",  # QHD
     "3840x2160"   # UHD
 ]
-display_size_menu = ttk.OptionMenu(root, display_size_var, *display_sizes, command=set_display_size)
+display_size_menu = tk.OptionMenu(root, display_size_var, *display_sizes, command=set_display_size)
 display_size_menu.pack()
 
 # Set up sliders and entry boxes for RGB and alpha
-red_value = tk.StringVar(value='202')
+red_value = tk.StringVar(value='130')
 red_slider = tk.Scale(root, from_=0, to=255, orient="horizontal", label="Red", length=400, command=lambda x: update_color())
-red_slider.set(202)
+red_slider.set(130)
 red_slider.pack()
+
 red_frame = tk.Frame(root)
 red_frame.pack()
 red_minus_button = tk.Button(red_frame, text="-", command=lambda: update_slider_from_button(red_slider, red_value, -1))
@@ -149,9 +187,9 @@ red_plus_button = tk.Button(red_frame, text="+", command=lambda: update_slider_f
 red_plus_button.grid(row=0, column=2)
 red_entry.bind("<KeyRelease>", lambda event: update_slider_from_entry(red_entry, red_slider))
 
-green_value = tk.StringVar(value='255')
+green_value = tk.StringVar(value='40')
 green_slider = tk.Scale(root, from_=0, to=255, orient="horizontal", label="Green", length=400, command=lambda x: update_color())
-green_slider.set(255)
+green_slider.set(40)
 green_slider.pack()
 green_frame = tk.Frame(root)
 green_frame.pack()
@@ -163,9 +201,9 @@ green_plus_button = tk.Button(green_frame, text="+", command=lambda: update_slid
 green_plus_button.grid(row=0, column=2)
 green_entry.bind("<KeyRelease>", lambda event: update_slider_from_entry(green_entry, green_slider))
 
-blue_value = tk.StringVar(value='242')
+blue_value = tk.StringVar(value='170')
 blue_slider = tk.Scale(root, from_=0, to=255, orient="horizontal", label="Blue", length=400, command=lambda x: update_color())
-blue_slider.set(242)
+blue_slider.set(170)
 blue_slider.pack()
 blue_frame = tk.Frame(root)
 blue_frame.pack()
@@ -181,6 +219,7 @@ alpha_value = tk.StringVar(value='255')
 alpha_slider = tk.Scale(root, from_=0, to=255, orient="horizontal", label="Alpha", length=400, command=lambda x: update_color())
 alpha_slider.set(255)
 alpha_slider.pack()
+
 alpha_frame = tk.Frame(root)
 alpha_frame.pack()
 alpha_minus_button = tk.Button(alpha_frame, text="-", command=lambda: update_slider_from_button(alpha_slider, alpha_value, -1))
@@ -190,10 +229,23 @@ alpha_entry.grid(row=0, column=1)
 alpha_plus_button = tk.Button(alpha_frame, text="+", command=lambda: update_slider_from_button(alpha_slider, alpha_value, 1))
 alpha_plus_button.grid(row=0, column=2)
 alpha_entry.bind("<KeyRelease>", lambda event: update_slider_from_entry(alpha_entry, alpha_slider))
+# new alpha
+
+
+
+
+# Create vignette slider for vignetting control
+vignette_value = tk.StringVar(value='0')
+vignette_slider = tk.Scale(root, from_=-50, to=50, orient='horizontal', label='Vignette', length=400,command=lambda x: update_color())
+vignette_slider.set(0)
+vignette_slider.pack(pady=10)
+
+
 
 # Add text input field for user notes
 user_input_label = tk.Label(root, text="User Notes:")
 user_input_label.pack()
+
 user_input = tk.Entry(root, width=50)
 user_input.pack()
 
@@ -201,15 +253,16 @@ user_input.pack()
 log_path_label = tk.Entry(root, width=70)
 log_path_label.insert(0, f"Log File Path: {log_file_path}")
 log_path_label.config(state="readonly")
-log_path_label.pack()
+log_path_label.pack(pady=2)
+
 
 # Add save button
 save_button = tk.Button(root, text="Save to Log", command=save_log)
-save_button.pack()
+save_button.pack(pady=10)
 
 # Add exit button
 exit_button = tk.Button(root, text="Exit", command=exit_app)
-exit_button.pack()
+exit_button.pack(pady=20)
 
 # Run the Tkinter main loop in a separate thread to allow the Pygame display to remain active
 root.mainloop()
