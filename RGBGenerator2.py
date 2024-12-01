@@ -5,17 +5,16 @@
 #
 # Author: Creator of Vlads Test Target
 #
-# Note: The alpha channel is handled using a Pygame surface with an alpha channel. The alpha value ranges from 0 (fully transparent) to 255 (fully opaque),
-# allowing for precise control over the transparency of the displayed color. The implementation involves clearing the Pygame screen using `color_screen.fill((0, 0, 0))` to reset it, followed by blitting the updated surface with `color_screen.blit(surface, (0, 0))` to apply the desired transparency level.
+# Note: The alpha channel is handled using a Pygame surface with an alpha channel. 
+# The alpha value ranges from 0 (fully transparent) to 255 (fully opaque),
+# allowing for precise control over the transparency of the displayed color. 
+# The implementation involves clearing the Pygame screen using `color_screen.fill((0, 0, 0))` to reset it, 
+# followed by blitting the updated surface with `color_screen.blit(surface, (0, 0))` to apply the desired transparency level.
 #
-# Specification for Version 20:
-# Detailed Requirements:
-# 1. **Application Components**:
-#    - **Alpha Channel Handling**: The alpha channel is managed using a Pygame surface with an alpha channel, allowing for transparency values ranging from 0 (fully transparent) to 255 (fully opaque). This is implemented by clearing the Pygame screen using `color_screen.fill((0, 0, 0))` to reset it, followed by blitting the updated surface with `color_screen.blit(surface, (0, 0))` to apply the desired transparency level.
+
 
 import pygame
 import tkinter as tk
-#from tkinter import ttk
 import datetime
 import os
 import math
