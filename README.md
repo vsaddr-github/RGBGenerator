@@ -4,7 +4,8 @@ Creates RGB output on second screen or video projector. Triple laser  video proj
 
 ## Versions
 
-RGB_Generator2.py is the latest version
+RGB_Generator2a.py is the latest version (added cycling thru channels).
+RGB_Generator2.py is the base version
 RGB_Generator.py is provided for reference only
 
 ## Overview
@@ -15,9 +16,11 @@ The RGB Generator is an application designed to control RGB color outputs using 
 - **Real-time RGB and Alpha Control**: Adjust Red, Green, Blue, and Alpha (transparency) values via sliders, manual buttons, or direct input fields.
 - **User Notes and Logging**: Save RGB values, Alpha, and user notes along with timestamps to a log file.
 - **Custom Screen Resolution**: Change the resolution of the display on the secondary screen.
-- **Alpha Channel** - to change brightness without changing colors. V2 only
+- **Alpha Channel** - to change brightness without changing colors. Version V2 only
 
-- **Vignetting** - to contol spacial brightness distribution if screen is used as background. V2 only
+- **Vignetting** - to contol spacial brightness distribution if screen is used as background. Version V2 only
+- **Cycling** - automatic cycling thru the colors - in case you want to take capture from each color. Set intensity for each channel while cycling is off . Version V2a only
+
 
 ## License
 This software is open source and distributed under an open source license. You are permitted to use, modify, and distribute the application, provided that proper credit is given to the original author. The software must include a reference to the creator of Vlads Test Target.
