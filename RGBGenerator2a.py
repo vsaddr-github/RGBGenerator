@@ -332,6 +332,9 @@ rgb_restore_btn = tk.Button(channel_frame, text="A RGB", underline=0, width=10, 
 rgb_restore_btn.grid(row=0, column=3, padx=5)
 
 # Add RGB cycle button
+
+interval=2 # seconds
+
 def toggle_cycle():
     global cycle_running, cycle_index
 
@@ -362,14 +365,16 @@ def cycle_rgb():
     global cycle_index
     if not cycle_running:
         return
-    modes = ['red', 'green', 'blue', 'rgb']
+    modes = ['red', 'green', 'blue', 'rgb','rgb','rgb']
     current_mode = modes[cycle_index % len(modes)]
     if current_mode == 'rgb':
+        print (f' {cycle_index} : {current_mode} ')
         restore_rgb()
     else:
+        print (f' {cycle_index} : {current_mode} ')
         set_color_single(current_mode)
     cycle_index += 1
-    root.after(2000, cycle_rgb)
+    root.after(interval*1000, cycle_rgb)
 
 cycle_running = False
 cycle_index = 0
