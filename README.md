@@ -1,15 +1,23 @@
 # RGB Generator
 
-Creates RGB output on second screen or video projector
+Creates RGB output on second screen or video projector. Triple laser  video projector like Optoma Technology ML1080 550-Lumen Full HD Laser DLP Projector set to widest color gamut (WCG) is recommended for RGB camera scanning.
+
+## Versions
+
+RGB_Generator2.py is the latest version
+RGB_Generator.py is provided for reference only
 
 ## Overview
 The RGB Generator is an application designed to control RGB color outputs using a dual monitor setup. The primary screen is used to adjust settings, while the secondary screen, typically connected to a projector, displays the selected color. The application is built using Pygame and Tkinter for controlling colors and GUI interaction respectively.
 
-## Features
+## Features 
 - **Dual Monitor Setup**: Control color on a secondary screen while adjusting settings on the primary screen.
 - **Real-time RGB and Alpha Control**: Adjust Red, Green, Blue, and Alpha (transparency) values via sliders, manual buttons, or direct input fields.
 - **User Notes and Logging**: Save RGB values, Alpha, and user notes along with timestamps to a log file.
 - **Custom Screen Resolution**: Change the resolution of the display on the secondary screen.
+- **Alpha Channel** - to change brightness without changing colors. V2 only
+
+- **Vignetting** - to contol spacial brightness distribution if screen is used as background. V2 only
 
 ## License
 This software is open source and distributed under an open source license. You are permitted to use, modify, and distribute the application, provided that proper credit is given to the original author. The software must include a reference to the creator of Vlads Test Target.
@@ -33,7 +41,7 @@ pip install tkinter
 > Note: `tkinter` is usually included with Python by default, but this command ensures it is available.
 
 ### Step 3: Download the RGB Generator Application
-1. Obtain the script file (`RGB_Generator.py`) provided by the author.
+1. Obtain the script file (`RGB_Generator2.py`) provided by the author.
 2. Save it in a location that you can easily access.
 
 ### Step 4: Connect Your Monitors
@@ -41,11 +49,11 @@ Ensure that you have two monitors connected to your system. The second monitor s
 
 ### Step 5: Run the Application
 1. Open a Command Prompt.
-2. Navigate to the directory where you saved the `RGB_Generator.py` file.
+2. Navigate to the directory where you saved the `RGB_Generator2.py` file.
 3. Run the following command to start the application:
 
 ```bash
-python RGB_Generator.py
+python RGB_Generator2.py
 ```
 
 ## User Guide
