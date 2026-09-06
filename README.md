@@ -5,7 +5,9 @@ Creates RGB output on second screen or video projector. Triple laser  video proj
 ## Versions
 
 RGB_Generator2a.py is the latest version (added cycling thru channels).
+
 RGB_Generator2.py is the base version
+
 RGB_Generator.py is provided for reference only
 
 ## Overview
